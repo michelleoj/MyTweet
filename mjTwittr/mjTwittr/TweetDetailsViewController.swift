@@ -99,7 +99,6 @@ class TweetDetailsViewController: UIViewController {
             favoriteCount.text = fcount.stringValue
             
         }
-        print("here \(tweet?.retweet)")
         
         
         avatarImageView.layer.cornerRadius = 3

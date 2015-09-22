@@ -20,22 +20,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().tintColor = UIColor.whiteColor()
         UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName : UIColor.whiteColor()]
         
+        
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "userDidLogout", name: userDidLogoutNotification, object: nil)
         if User.currentUser != nil {
-            //Go to the logged in screen
-            print("current user detected: \(User.currentUser?.name)")
             
-            let hamburgerViewController = window?.rootViewController as! HamburgerViewController
+            let hamburgerViewController = storyboard.instantiateViewControllerWithIdentifier("HamburgerViewController") as! HamburgerViewController
             
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let menuViewController = storyboard.instantiateViewControllerWithIdentifier("MenuViewController") as! MenuViewController
+            
             menuViewController.hamburgerViewController = hamburgerViewController
             
             hamburgerViewController.menuViewController = menuViewController
             
+            window?.rootViewController = hamburgerViewController
+            window?.makeKeyAndVisible()
+            
+            
+            
             
            //original vc to go to when logged in
-//            var vc = storyboard.instantiateViewControllerWithIdentifier("TwitterNavigationController") as! UIViewController
+//            let vc = storyboard.instantiateViewControllerWithIdentifier("TwitterNavigationController") as! UIViewController
 //            window?.rootViewController = vc
         }
         return true

@@ -13,6 +13,7 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     var refreshControl: UIRefreshControl!
     var tweets: [Tweet]?
     var lastId: NSNumber?
+    var lastTapLoc: Int?
     
     @IBAction func replyToTweet(sender: AnyObject) {
         self.performSegueWithIdentifier("composeTweet", sender: self)
@@ -51,11 +52,12 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         
     }
     
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+
+
     
     @IBAction func onLogout(sender: AnyObject) {
         User.currentUser?.logout()
@@ -101,9 +103,24 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         
         cell.tweet = tweets?[indexPath.row]
         
+        cell.avatarImageView.userInteractionEnabled = true
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "avatarImageTapped:")
+        tapGestureRecognizer.numberOfTapsRequired = 1
+        cell.avatarImageView.addGestureRecognizer(tapGestureRecognizer)
+        
         return cell
     }
     
+    
+    func avatarImageTapped(sender: UITapGestureRecognizer) {
+        print("hello there brethren")
+        let touch = sender.locationInView(tableView)
+        if let indexPath = tableView.indexPathForRowAtPoint(touch) {
+            lastTapLoc = indexPath.row
+            print("TESTING TOUCH LOCATION: \(indexPath.row)")
+        }
+        performSegueWithIdentifier("ProfileViewSegue", sender: sender)
+    }
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -115,6 +132,16 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
             let tweetDetailsViewController = segue.destinationViewController as! TweetDetailsViewController
             
             tweetDetailsViewController.tweet = tweet
+        } else if let s = sender as? UITapGestureRecognizer {
+//            let cell = s
+//            let indexPath = tableView.indexPathForCell(cell)!
+            let tweet = tweets![lastTapLoc!]
+            
+            let profileViewController = segue.destinationViewController as! ProfileViewController
+            
+            profileViewController.user = tweet.user
+            
+            
         } else {
             let newTweetViewController = segue.destinationViewController as! NewTweetViewController
             newTweetViewController.delegate = self
@@ -129,5 +156,13 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         self.tableView.reloadData()
     }
 
+    func layoutSubviews() {
+        let shadowPath = UIBezierPath(rect: view.bounds)
+        view.layer.masksToBounds = false
+        view.layer.shadowColor = UIColor.blackColor().CGColor
+        view.layer.shadowOffset = CGSizeMake(0, 0.5)
+        view.layer.shadowOpacity = 0.2
+        view.layer.shadowPath = shadowPath.CGPath
+    }
 
 }

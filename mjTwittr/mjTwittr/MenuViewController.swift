@@ -10,13 +10,17 @@ import UIKit
 
 class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+    @IBOutlet weak var currentUserDescriptionLabel: UILabel!
+    @IBOutlet weak var currentUserHandleLabel: UILabel!
+    @IBOutlet weak var currentUserImageView: UIImageView!
     @IBOutlet weak var tableView: UITableView!
     
+
     
     private var mentionsNavigationController: UIViewController!
     //the tweets timeline
     private var twitterNavigationController: UIViewController!
-    private var profileNavigationController: UIViewController!
+    private var profileViewController: UIViewController!
     
     var viewControllers: [UIViewController] = []
     
@@ -28,15 +32,22 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
         tableView.dataSource = self
         tableView.delegate = self
         
+        currentUserImageView.setImageWithURL(NSURL(string: User.currentUser!.profileImgUrl!));
+        
+        currentUserHandleLabel.text = User.currentUser!.name
+        
+        currentUserDescriptionLabel.text = User.currentUser!.dictionary["description"] as? String
+        
+        
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         twitterNavigationController = storyboard.instantiateViewControllerWithIdentifier("TwitterNavigationController")
         mentionsNavigationController = storyboard.instantiateViewControllerWithIdentifier("MentionsNavigationController")
-        profileNavigationController = storyboard.instantiateViewControllerWithIdentifier("ProfileNavigationController")
+        profileViewController = storyboard.instantiateViewControllerWithIdentifier("ProfileView")
         
         
         viewControllers.append(twitterNavigationController)
         viewControllers.append(mentionsNavigationController)
-        viewControllers.append(profileNavigationController)
+        viewControllers.append(profileViewController)
         
         hamburgerViewController?.contentViewController = twitterNavigationController
     }

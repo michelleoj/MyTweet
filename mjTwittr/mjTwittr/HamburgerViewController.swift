@@ -46,7 +46,7 @@ class HamburgerViewController: UIViewController {
             contentView.addSubview(contentViewController.view)
             contentViewController.didMoveToParentViewController(self)
             
-            UIView.animateWithDuration(0.3) { () -> Void in
+            UIView.animateWithDuration(0.7) { () -> Void in
                 self.leftMarginConstraint.constant = 0
                 self.view.layoutIfNeeded()
             }
@@ -76,9 +76,9 @@ class HamburgerViewController: UIViewController {
         } else if sender.state == UIGestureRecognizerState.Changed {
             leftMarginConstraint.constant = originalLeftMargin + translation.x
         } else if sender.state == UIGestureRecognizerState.Ended {
-            UIView.animateWithDuration(0.5, animations: {
+            UIView.animateWithDuration(0.7, animations: {
                 if velocity.x > 0 {
-                    self.leftMarginConstraint.constant = self.view.frame.size.width - 100
+                    self.leftMarginConstraint.constant = self.view.frame.size.width - 50
                     
                 } else {
                     self.leftMarginConstraint.constant = 0

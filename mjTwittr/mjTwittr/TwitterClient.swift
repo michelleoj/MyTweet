@@ -25,7 +25,6 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
     }
     
     func favoriteTweet(id: String?, completion: (tweet: Tweet?, error: NSError?) -> ()) {
-        print("LOOK HERE: \(id!)", terminator: "")
         TwitterClient.sharedInstance.POST("1.1/favorites/create.json?id=\(id!)", parameters: nil, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
             let tweet = Tweet(dictionary: response as! NSDictionary)
             completion(tweet: tweet, error: nil)
@@ -47,13 +46,13 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
     }
     
     func postTweet(status: String?, in_reply_to_status_id: String?, completion: (tweet: Tweet?, error: NSError?) ->()) {
-        let js = status!.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)
+        let js = status!.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())
         var urlString = "1.1/statuses/update.json?status=\(js!)"
         if in_reply_to_status_id != nil {
              urlString = urlString + "&in_reply_to_status_id=\(in_reply_to_status_id)"
         }
         urlString = urlString + "&display_coordinates=false"
-        print("print url: \(urlString)")
+        
 //        
         TwitterClient.sharedInstance.POST(urlString, parameters: nil, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
             
@@ -102,7 +101,7 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
                 let user = User(dictionary: response as! NSDictionary)
                 User.currentUser = user
                 self.loginCompletion?(user: user, error: nil)
-                print("user: \(user.name)")
+                //print("user: \(user.name)")
                 }, failure: { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
                     print("error getting current user")
                     self.loginCompletion?(user: nil, error: error)
@@ -123,6 +122,33 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
         }, failure: { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
                 print("error getting next 20 tweets")
                 completion(tweets: nil, error: error)
+        })
+    }
+    
+    func getFollowingCount(username: String, userid: Int, completion: (ids: [Int]?, error: NSError?) -> ()) {
+        
+        TwitterClient.sharedInstance.GET("1.1/friends/ids.json?screen_name=\(username)&user_id=\(userid)", parameters: nil, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
+                let idDictionary = response as! NSDictionary
+                let idsList = idDictionary["ids"] as! [Int]
+                completion(ids: idsList, error: nil)
+        }, failure: { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
+                print("error getting following count")
+            completion(ids: nil, error: error)
+        })
+    }
+    
+    
+    
+    func getFollowersCount(username: String, userid: Int, completion: (ids: [Int]?, error: NSError?) -> ()) {
+        
+        TwitterClient.sharedInstance.GET("/1.1/followers/ids.json?screen_name=\(username)&user_id=\(userid)", parameters: nil, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
+                print("YAY")
+                let idDictionary = response as! NSDictionary
+                let idsList = idDictionary["ids"] as! [Int]
+                completion(ids: idsList, error: nil)
+        }, failure: { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
+                print("error getting followers count")
+                completion(ids: nil, error: error)
         })
     }
 }

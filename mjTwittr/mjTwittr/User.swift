@@ -17,19 +17,24 @@ class User: NSObject {
     var name: String?
     var screenname: String?
     var profileImgUrl: String?
+    var headerImgUrl: String?
     var tagline: String?
     var dictionary: NSDictionary
+    var userId: Int?
     
     
     init(dictionary: NSDictionary) {
         self.dictionary = dictionary
         name = dictionary["name"] as? String
         screenname = dictionary["screen_name"] as? String
-        profileImgUrl = dictionary["profile_image_url"] as? String
+        profileImgUrl = dictionary["profile_image_url_https"] as? String
+        headerImgUrl = dictionary["profile_banner_url"] as? String
         profileImgUrl = profileImgUrl?.stringByReplacingOccurrencesOfString("normal", withString: "bigger", options: NSStringCompareOptions.LiteralSearch, range: nil)
-        print("HD PROFILE PIC: \(profileImgUrl!)")
+        //print("HD PROFILE PIC: \(self.dictionary)")
         tagline = dictionary["description"] as? String
+        userId = dictionary["id"] as? Int
     }
+    
     
     func logout() {
         User.currentUser = nil

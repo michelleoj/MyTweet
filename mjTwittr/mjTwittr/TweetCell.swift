@@ -44,7 +44,7 @@ class TweetCell: UITableViewCell {
             if tweet.retweet != nil {
                 let retweet = tweet.retweet!
                 let url = NSURL(string: retweet.user!.profileImgUrl!)
-                avatarImageView.setImageWithURL(url)
+                avatarImageView.setImageWithURL(url!)
                 nameLabel.text = retweet.user?.name
                 handleLabel.text = "@" + retweet.user!.screenname!
                 timestampLabel.text = retweet.timeElapse
@@ -64,7 +64,7 @@ class TweetCell: UITableViewCell {
                 }
             } else {
                 let url = NSURL(string: tweet.user!.profileImgUrl!)
-                avatarImageView.setImageWithURL(url)
+                avatarImageView.setImageWithURL(url!)
                 nameLabel.text = tweet.user?.name
                 handleLabel.text = "@" + tweet.user!.screenname!
                 timestampLabel.text = tweet.timeElapse
@@ -88,7 +88,10 @@ class TweetCell: UITableViewCell {
         }
     }
     
-
+    
+    
+    
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -98,6 +101,8 @@ class TweetCell: UITableViewCell {
         avatarImageView.clipsToBounds = true
         
         handleLabel.preferredMaxLayoutWidth = handleLabel.frame.size.width
+        
+        
     }
     
     override func layoutSubviews() {

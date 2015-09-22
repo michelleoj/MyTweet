@@ -47,7 +47,6 @@ class NewTweetViewController: UIViewController {
         print("submitted tweet")
         TwitterClient.sharedInstance.postTweet(newTweetText.text, in_reply_to_status_id: nil, completion: { (tweet, error) -> () in
             self.tweet = tweet
-            print("the new tweet \(self.tweet!)")
             self.delegate?.newTweetViewController!(self, didCreateTweet: self.tweet!)
         })
         self.navigationController?.popToRootViewControllerAnimated(true)

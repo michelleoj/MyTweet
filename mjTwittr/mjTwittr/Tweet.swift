@@ -34,10 +34,9 @@ class Tweet: NSObject {
         
         if dictionary["retweeted_status"] != nil {
             retweet = Tweet(dictionary: dictionary["retweeted_status"] as! NSDictionary)
-            print("RETWEETED STATUS: \(retweet)")
         }
         
-        print("dictionary: \(dictionary as NSDictionary)")
+       
         
         let formatter = NSDateFormatter()
         
